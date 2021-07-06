@@ -1,52 +1,68 @@
-name: ""
+name: argocd-bootstrap
 type: terraform
-description: ""
+description: Module to provision ArgoCD and bootstrap an application using the GitOps repo
 tags:
     - tools
-    - devops
+    - gitops
+    - bootstrap
 versions:
 - platforms:
     - kubernetes
     - ocp3
     - ocp4
-  dependencies: []
-#    - id: cluster
-#      refs:
-#        - source: github.com/ibm-garage-cloud/terraform-ibm-container-platform
-#          version: ">= 1.7.0"
-#        - source: github.com/ibm-garage-cloud/terraform-k8s-ocp-cluster
-#          version: ">= 2.0.0"
-#    - id: namespace
-#      refs:
-#        - source: github.com/ibm-garage-cloud/terraform-k8s-namespace
-#          version: ">= 2.1.0"
-#    - id: dashboard
-#      refs:
-#        - source: github.com/ibm-garage-cloud/terraform-k8s-dashboard
-#          version: ">= 1.6.0"
-  variables: []
-#    - name: cluster_type
-#      moduleRef:
-#        id: cluster
-#        output: type_code
-#    - name: cluster_ingress_hostname
-#      moduleRef:
-#        id: cluster
-#        output: ingress_hostname
-#    - name: cluster_config_file
-#      moduleRef:
-#        id: cluster
-#        output: config_file_path
-#    - name: tls_secret_name
-#      moduleRef:
-#        id: cluster
-#        output: tls_secret_name
-#    - name: releases_namespace
-#      moduleRef:
-#        id: namespace
-#        output: name
-#        discriminator: tools
-#    - name: icon_url
-#      moduleRef:
-#        id: dashboard
-#        output: base_icon_url
+  dependencies:
+    - id: cluster
+      refs:
+        - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
+          version: ">= 1.7.0"
+        - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
+          version: ">= 1.0.0"
+        - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
+          version: ">= 2.0.0"
+        - source: github.com/cloud-native-toolkit/terraform-ocp-login
+          version: ">= 1.0.0"
+    - id: olm
+      refs:
+        - source: github.com/cloud-native-toolkit/terraform-k8s-olm
+          version: ">= 1.2.2"
+    - id: gitops
+      refs:
+        - source: github.com/cloud-native-toolkit/terraform-tools-gitops
+          version: ">= 1.2.0"
+  variables:
+    - name: cluster_type
+      moduleRef:
+        id: cluster
+        output: platform.type_code
+    - name: ingress_subdomain
+      moduleRef:
+        id: cluster
+        output: platform.ingress
+    - name: cluster_config_file
+      moduleRef:
+        id: cluster
+        output: config_file_path
+    - name: olm_namespace
+      moduleRef:
+        id: olm
+        output: olm_namespace
+    - name: operator_namespace
+      moduleRef:
+        id: olm
+        output: target_namespace
+    - name: gitops_repo_url
+      moduleRef:
+        id: gitops
+        output: config_repo_url
+    - name: git_username
+      moduleRef:
+        id: gitops
+        output: config_username
+    - name: git_token
+      moduleRef:
+        id: gitops
+        output: config_token
+    - name: bootstrap_path
+      moduleRef:
+        id: gitops
+        output: bootstrap_path
