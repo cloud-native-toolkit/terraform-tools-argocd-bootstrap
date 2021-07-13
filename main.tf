@@ -13,12 +13,30 @@ module "openshift_cicd" {
 resource null_resource bootstrap_argocd {
   depends_on = [module.openshift_cicd]
 
+  triggers = {
+    argocd_host = module.openshift_cicd.argocd_host
+    argocd_user = module.openshift_cicd.argocd_username
+    argocd_password = module.openshift_cicd.argocd_password
+    git_repo = var.gitops_repo_url
+    git_token = var.git_token
+  }
+
   provisioner "local-exec" {
-    command = "${path.module}/scripts/argocd-bootstrap.sh ${module.openshift_cicd.argocd_host} ${module.openshift_cicd.argocd_username} ${module.openshift_cicd.argocd_namespace} ${var.gitops_repo_url} ${var.git_username} ${var.bootstrap_path}"
+    command = "${path.module}/scripts/argocd-bootstrap.sh ${self.triggers.argocd_host} ${self.triggers.argocd_user} ${module.openshift_cicd.argocd_namespace} ${self.triggers.git_repo} ${var.git_username} ${var.bootstrap_path}"
 
     environment = {
-      ARGOCD_PASSWORD = module.openshift_cicd.argocd_password
-      GIT_TOKEN = var.git_token
+      ARGOCD_PASSWORD = self.triggers.argocd_password
+      GIT_TOKEN = self.triggers.git_token
+    }
+  }
+
+  provisioner "local-exec" {
+    when = destroy
+
+    command = "${path.module}/scripts/argocd-cleanup.sh ${self.triggers.argocd_host} ${self.triggers.argocd_user} ${self.triggers.git_repo}"
+
+    environment = {
+      ARGOCD_PASSWORD = self.triggers.argocd_password
     }
   }
 }

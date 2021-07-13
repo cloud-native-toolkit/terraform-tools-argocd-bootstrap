@@ -32,13 +32,14 @@ echo "Logging into argocd: ${ARGOCD_HOST}"
 ${ARGOCD} login "${ARGOCD_HOST}" --username "${ARGOCD_USER}" --password "${ARGOCD_PASSWORD}" --insecure --grpc-web
 
 echo "Registering git repo: ${GIT_REPO}"
-${ARGOCD} repo add "${GIT_REPO}" --username "${GIT_USER}" --password "${GIT_TOKEN}"
+${ARGOCD} repo add "${GIT_REPO}" --username "${GIT_USER}" --password "${GIT_TOKEN}" --upsert
 
 echo "Creating bootstrap project"
 ${ARGOCD} proj create bootstrap \
   -d "https://kubernetes.default.svc,${ARGOCD_NAMESPACE}" \
   -s "${GIT_REPO}" \
-  --description "Bootstrap project resources"
+  --description "Bootstrap project resources" \
+  --upsert
 
 echo "Creating bootstrap application"
 ${ARGOCD} app create bootstrap \
@@ -48,4 +49,5 @@ ${ARGOCD} app create bootstrap \
   --dest-server "https://kubernetes.default.svc" \
   --sync-policy auto \
   --self-heal \
-  --auto-prune
+  --auto-prune \
+  --upsert
