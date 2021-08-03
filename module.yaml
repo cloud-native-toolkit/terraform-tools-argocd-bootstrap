@@ -1,4 +1,5 @@
 name: argocd-bootstrap
+alias: argocd-bootstrap
 type: terraform
 description: Module to provision ArgoCD and bootstrap an application using the GitOps repo
 tags:
