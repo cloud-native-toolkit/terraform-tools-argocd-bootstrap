@@ -1,13 +1,9 @@
 module "gitops_dashboard" {
   source = "github.com/cloud-native-toolkit/terraform-gitops-dashboard"
 
-  config_repo              = module.gitops.config_repo
-  config_token             = module.gitops.config_token
-  config_paths             = module.gitops.config_paths
-  config_projects          = module.gitops.config_projects
-  application_repo         = module.gitops.application_repo
-  application_token        = module.gitops.application_token
-  application_paths        = module.gitops.application_paths
+  gitops_config = module.gitops.gitops_config
+  git_credentials = module.gitops.git_credentials
+  server_name = module.gitops.server_name
   namespace                = module.gitops_namespace.name
   cluster_ingress_hostname = module.dev_cluster.platform.ingress
   cluster_type             = module.dev_cluster.platform.type_code

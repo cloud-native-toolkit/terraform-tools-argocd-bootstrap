@@ -35,14 +35,15 @@ echo "Registering git repo: ${GIT_REPO}"
 ${ARGOCD} repo add "${GIT_REPO}" --username "${GIT_USER}" --password "${GIT_TOKEN}" --upsert
 
 echo "Creating bootstrap project"
-${ARGOCD} proj create bootstrap \
+${ARGOCD} proj create 0-bootstrap \
   -d "https://kubernetes.default.svc,${ARGOCD_NAMESPACE}" \
   -s "${GIT_REPO}" \
   --description "Bootstrap project resources" \
   --upsert
 
 echo "Creating bootstrap application"
-${ARGOCD} app create bootstrap \
+${ARGOCD} app create 0-bootstrap \
+  --project 0-bootstrap \
   --repo "${GIT_REPO}" \
   --path "${BOOTSTRAP_PATH}" \
   --dest-namespace "${ARGOCD_NAMESPACE}" \
