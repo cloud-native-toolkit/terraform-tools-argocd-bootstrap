@@ -1,6 +1,6 @@
 
 module "openshift_cicd" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-openshift-cicd.git?ref=v1.5.5"
+  source = "github.com/cloud-native-toolkit/terraform-tools-openshift-cicd.git?ref=v1.6.0"
 
   cluster_type        = var.cluster_type
   ingress_subdomain   = var.ingress_subdomain
@@ -8,6 +8,8 @@ module "openshift_cicd" {
   olm_namespace       = var.olm_namespace
   operator_namespace  = var.operator_namespace
   app_namespace       = "default"
+  sealed_secret_cert  = var.sealed_secret_cert
+  sealed_secret_private_key = var.sealed_secret_private_key
 }
 
 resource null_resource bootstrap_argocd {

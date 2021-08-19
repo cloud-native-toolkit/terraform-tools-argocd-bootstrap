@@ -9,8 +9,6 @@ output "argocd_service_account" {
   value       = module.openshift_cicd.argocd_service_account
 }
 
-
 output "sealed_secrets_cert" {
   value = module.openshift_cicd.sealed_secrets_cert
 }
-

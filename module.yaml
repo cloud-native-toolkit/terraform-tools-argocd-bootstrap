@@ -30,6 +30,10 @@ versions:
       refs:
         - source: github.com/cloud-native-toolkit/terraform-tools-gitops
           version: ">= 1.2.0"
+    - id: cert
+      refs:
+        - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
+          version: ">= 0.0.0"
   variables:
     - name: cluster_type
       moduleRef:
@@ -67,3 +71,11 @@ versions:
       moduleRef:
         id: gitops
         output: bootstrap_path
+    - name: sealed_secret_cert
+      moduleRef:
+        id: cert
+        output: cert
+    - name: sealed_secret_private_key
+      moduleRef:
+        id: cert
+        output: private_key
