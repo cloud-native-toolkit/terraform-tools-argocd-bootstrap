@@ -5,6 +5,4 @@ module "gitops_namespace" {
   git_credentials = module.gitops.git_credentials
   server_name = module.gitops.server_name
   name = var.namespace
-  argocd_namespace = module.argocd-bootstrap.argocd_namespace
-  argocd_service_account = module.argocd-bootstrap.argocd_service_account
 }
