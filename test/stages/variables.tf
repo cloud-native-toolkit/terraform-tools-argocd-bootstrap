@@ -69,7 +69,7 @@ variable "git_type" {
 }
 
 variable "git_org" {
-  default = "seansund"
+  default = "cloud-native-toolkit-test"
 }
 
 variable "git_repo" {
