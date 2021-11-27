@@ -57,6 +57,7 @@ jobs:
           IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
           LOCK: branch
           AUTO_MERGE: "false"
+          RATE_LIMIT: 'true'
 
 #      - name: Verify destroy on ${{ matrix.testcase }}
 #        uses: cloud-native-toolkit/action-module-verify-destroy@main
