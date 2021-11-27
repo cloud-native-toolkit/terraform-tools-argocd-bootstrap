@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        platform: [ocp4_latest]
+        testcase: [ocp4_latest]
       #      max-parallel: 1
       fail-fast: false
 
@@ -29,27 +29,45 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Verify deploy on ${{ matrix.platform }}
-        uses: ibm-garage-cloud/action-module-verify-deploy@main
+      - id: variables
+        name: Set up variables
+        env:
+          GIT_ORG: ${{ secrets.GIT_ORG }}
+        shell: bash
+        run: |
+          repo=$(echo ${GITHUB_REPOSITORY} | sed -E "s~.*/[^-]+-(.*)~\1~g")
+          echo "Repo: $repo"
+          echo "::set-output name=repo::$repo"
+
+          org="${GIT_ORG:-cloud-native-toolkit-test}"
+          echo "Org: $org"
+          echo "::set-output name=org::$org"
+
+      - name: Verify deploy on ${{ matrix.testcase }}
+        uses: cloud-native-toolkit/action-module-verify-deploy@main
         with:
-          clusterId: ${{ matrix.platform }}
+          clusterId: ${{ matrix.testcase }}
           validateDeployScript: .github/scripts/validate-deploy.sh
         env:
           TF_VAR_git_username: ${{ secrets.GIT_ADMIN_USERNAME }}
           TF_VAR_git_token: ${{ secrets.GIT_ADMIN_TOKEN }}
+          TF_VAR_git_org: ${{ steps.variables.outputs.org }}
+          TF_VAR_git_repo: ${{ steps.variables.outputs.repo }}
           TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
           IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
           LOCK: branch
           AUTO_MERGE: "false"
 
-#      - name: Verify destroy on ${{ matrix.platform }}
-#        uses: ibm-garage-cloud/action-module-verify-destroy@main
+#      - name: Verify destroy on ${{ matrix.testcase }}
+#        uses: cloud-native-toolkit/action-module-verify-destroy@main
 #        if: ${{ always() }}
 #        with:
-#          clusterId: ${{ matrix.platform }}
+#          clusterId: ${{ matrix.testcase }}
 #        env:
 #          TF_VAR_git_username: ${{ secrets.GIT_ADMIN_USERNAME }}
 #          TF_VAR_git_token: ${{ secrets.GIT_ADMIN_TOKEN }}
+#          TF_VAR_git_org: ${{ steps.variables.outputs.org }}
+#          TF_VAR_git_repo: ${{ steps.variables.outputs.repo }}
 #          TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
 #          IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
 #          LOCK: branch
