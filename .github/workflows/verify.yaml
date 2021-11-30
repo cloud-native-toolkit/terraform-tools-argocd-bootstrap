@@ -17,7 +17,8 @@ jobs:
 
     strategy:
       matrix:
-        testcase: [ocp4_latest]
+        testcase:
+          - ocp4_latest
       #      max-parallel: 1
       fail-fast: false
 
