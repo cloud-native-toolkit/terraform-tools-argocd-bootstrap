@@ -56,23 +56,19 @@ jobs:
           TF_VAR_git_repo: ${{ steps.variables.outputs.repo }}
           TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
           IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
-          LOCK: branch
-          AUTO_MERGE: "true"
-          RATE_LIMIT: 'true'
 
-#      - name: Verify destroy on ${{ matrix.testcase }}
-#        uses: cloud-native-toolkit/action-module-verify-destroy@main
-#        if: ${{ always() }}
-#        with:
-#          clusterId: ${{ matrix.testcase }}
-#        env:
-#          TF_VAR_git_username: ${{ secrets.GIT_ADMIN_USERNAME }}
-#          TF_VAR_git_token: ${{ secrets.GIT_ADMIN_TOKEN }}
-#          TF_VAR_git_org: ${{ steps.variables.outputs.org }}
-#          TF_VAR_git_repo: ${{ steps.variables.outputs.repo }}
-#          TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
-#          IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
-#          LOCK: branch
+      - name: Verify destroy on ${{ matrix.testcase }}
+        uses: cloud-native-toolkit/action-module-verify-destroy@main
+        if: ${{ always() }}
+        with:
+          clusterId: ${{ matrix.testcase }}
+        env:
+          TF_VAR_git_username: ${{ secrets.GIT_ADMIN_USERNAME }}
+          TF_VAR_git_token: ${{ secrets.GIT_ADMIN_TOKEN }}
+          TF_VAR_git_org: ${{ steps.variables.outputs.org }}
+          TF_VAR_git_repo: ${{ steps.variables.outputs.repo }}
+          TF_VAR_ibmcloud_api_key: ${{ secrets.IBMCLOUD_API_KEY }}
+          IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
 
   release:
     #    if: ${{ github.event_name == 'push' }}
