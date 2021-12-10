@@ -110,6 +110,116 @@ versions:
         description: The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated
         default: ""
         optional: true
+    version: v1.4.2
+    outputs:
+      - name: argocd_namespace
+        description: The namespace where the ArgoCD instance has been provisioned
+      - name: argocd_service_account
+        description: The namespace where the ArgoCD instance has been provisioned
+      - name: sealed_secrets_cert
+        description: output "sealed_secrets_cert" {   value = module.openshift_cicd.sealed_secrets_cert }
+  - platforms:
+      - kubernetes
+      - ocp3
+      - ocp4
+    dependencies:
+      - id: cluster
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
+            version: ">= 1.7.0"
+          - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
+            version: ">= 1.0.0"
+          - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
+            version: ">= 2.0.0"
+          - source: github.com/cloud-native-toolkit/terraform-ocp-login
+            version: ">= 1.0.0"
+      - id: olm
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-k8s-olm
+            version: ">= 1.2.2"
+      - id: gitops
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-tools-gitops
+            version: ">= 1.2.0"
+      - id: cert
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
+            version: ">= 0.0.0"
+    variables:
+      - name: cluster_type
+        moduleRef:
+          id: cluster
+          output: platform.type_code
+        type: string
+        description: The type of cluster (openshift or kubernetes)
+      - name: ingress_subdomain
+        moduleRef:
+          id: cluster
+          output: platform.ingress
+        type: string
+        description: The subdomain for ingresses in the cluster
+        default: ""
+        optional: true
+      - name: cluster_config_file
+        moduleRef:
+          id: cluster
+          output: config_file_path
+        type: string
+        description: Cluster config file for Kubernetes cluster.
+      - name: olm_namespace
+        moduleRef:
+          id: olm
+          output: olm_namespace
+        type: string
+        description: Namespace where olm is installed
+      - name: operator_namespace
+        moduleRef:
+          id: olm
+          output: target_namespace
+        type: string
+        description: Namespace where operators will be installed
+      - name: gitops_repo_url
+        moduleRef:
+          id: gitops
+          output: config_repo_url
+        type: string
+        description: The GitOps repo url
+      - name: git_username
+        moduleRef:
+          id: gitops
+          output: config_username
+        type: string
+        description: The username used to access the GitOps repo
+      - name: git_token
+        moduleRef:
+          id: gitops
+          output: config_token
+        type: string
+        description: |-
+          The token used to access the GitOps repo
+          //  sensitive   = true
+      - name: bootstrap_path
+        moduleRef:
+          id: gitops
+          output: bootstrap_path
+        type: string
+        description: The path to the bootstrap config for ArgoCD
+      - name: sealed_secret_cert
+        moduleRef:
+          id: cert
+          output: cert
+        type: string
+        description: The certificate that will be used to encrypt sealed secrets. If not provided, a new one will be generated
+        default: ""
+        optional: true
+      - name: sealed_secret_private_key
+        moduleRef:
+          id: cert
+          output: private_key
+        type: string
+        description: The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated
+        default: ""
+        optional: true
     version: v1.4.1
     outputs:
       - name: argocd_namespace
