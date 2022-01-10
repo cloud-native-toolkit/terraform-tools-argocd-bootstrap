@@ -56,3 +56,9 @@ variable "sealed_secret_private_key" {
   description = "The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated"
   default     = ""
 }
+
+variable "bootstrap_prefix" {
+  type        = string
+  description = "The prefix used in ArgoCD to bootstrap the application"
+  default     = ""
+}
