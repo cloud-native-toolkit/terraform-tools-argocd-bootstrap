@@ -12,33 +12,16 @@ module "openshift_cicd" {
   sealed_secret_private_key = var.sealed_secret_private_key
 }
 
-resource null_resource bootstrap_argocd {
-  depends_on = [module.openshift_cicd]
+module "bootstrap" {
+  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.0.0"
 
-  triggers = {
-    argocd_host = module.openshift_cicd.argocd_host
-    argocd_user = module.openshift_cicd.argocd_username
-    argocd_password = module.openshift_cicd.argocd_password
-    git_repo = var.gitops_repo_url
-    git_token = var.git_token
-  }
-
-  provisioner "local-exec" {
-    command = "${path.module}/scripts/argocd-bootstrap.sh ${self.triggers.argocd_host} ${self.triggers.argocd_user} ${module.openshift_cicd.argocd_namespace} ${self.triggers.git_repo} ${var.git_username} ${var.bootstrap_path}"
-
-    environment = {
-      ARGOCD_PASSWORD = nonsensitive(self.triggers.argocd_password)
-      GIT_TOKEN = nonsensitive(self.triggers.git_token)
-    }
-  }
-
-  provisioner "local-exec" {
-    when = destroy
-
-    command = "${path.module}/scripts/argocd-cleanup.sh ${self.triggers.argocd_host} ${self.triggers.argocd_user} ${self.triggers.git_repo}"
-
-    environment = {
-      ARGOCD_PASSWORD = self.triggers.argocd_password
-    }
-  }
+  cluster_config_file = var.cluster_config_file
+  gitops_namespace    = module.openshift_cicd.argocd_namespace
+  sealed_secret_cert  = var.sealed_secret_cert
+  sealed_secret_private_key = var.sealed_secret_private_key
+  gitops_repo_url     = var.gitops_repo_url
+  git_username        = var.git_username
+  git_token           = var.git_token
+  bootstrap_path      = var.bootstrap_path
+  prefix              = var.bootstrap_prefix
 }
