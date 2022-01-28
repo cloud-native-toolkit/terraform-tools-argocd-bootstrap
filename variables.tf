@@ -62,3 +62,9 @@ variable "bootstrap_prefix" {
   description = "The prefix used in ArgoCD to bootstrap the application"
   default     = ""
 }
+
+variable "create_webhook" {
+  type        = bool
+  description = "Flag indicating that a webhook should be created in the gitops repo to notify argocd of changes"
+  default     = false
+}
