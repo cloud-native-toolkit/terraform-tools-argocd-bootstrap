@@ -13,7 +13,7 @@ module "openshift_cicd" {
 }
 
 module "bootstrap" {
-  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.0.2"
+  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.2.1"
 
   cluster_config_file = var.cluster_config_file
   gitops_namespace    = module.openshift_cicd.argocd_namespace
@@ -24,4 +24,5 @@ module "bootstrap" {
   git_token           = var.git_token
   bootstrap_path      = var.bootstrap_path
   prefix              = var.bootstrap_prefix
+  create_webhook      = var.create_webhook
 }
