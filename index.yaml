@@ -19,15 +19,126 @@ versions:
       - id: olm
         refs:
           - source: github.com/cloud-native-toolkit/terraform-k8s-olm
-            version: ">= 1.2.2"
+            version: '>= 1.2.2'
       - id: gitops
         refs:
           - source: github.com/cloud-native-toolkit/terraform-tools-gitops
-            version: ">= 1.2.0"
+            version: '>= 1.2.0'
       - id: cert
         refs:
           - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
-            version: ">= 0.0.0"
+            version: '>= 0.0.0'
+    variables:
+      - name: cluster_config_file
+        type: string
+        description: Cluster config file for Kubernetes cluster.
+        moduleRef:
+          id: cluster
+          output: config_file_path
+      - name: cluster_type
+        type: string
+        description: The type of cluster (openshift or kubernetes)
+        moduleRef:
+          id: cluster
+          output: platform.type_code
+      - name: olm_namespace
+        type: string
+        description: Namespace where olm is installed
+        moduleRef:
+          id: olm
+          output: olm_namespace
+      - name: operator_namespace
+        type: string
+        description: Namespace where operators will be installed
+        moduleRef:
+          id: olm
+          output: target_namespace
+      - name: ingress_subdomain
+        type: string
+        description: The subdomain for ingresses in the cluster
+        default: ''
+        moduleRef:
+          id: cluster
+          output: platform.ingress
+      - name: gitops_repo_url
+        type: string
+        description: The GitOps repo url
+        moduleRef:
+          id: gitops
+          output: config_repo_url
+      - name: git_username
+        type: string
+        description: The username used to access the GitOps repo
+        moduleRef:
+          id: gitops
+          output: config_username
+      - name: git_token
+        type: string
+        description: The token used to access the GitOps repo
+        moduleRef:
+          id: gitops
+          output: config_token
+      - name: bootstrap_path
+        type: string
+        description: The path to the bootstrap config for ArgoCD
+        moduleRef:
+          id: gitops
+          output: bootstrap_path
+      - name: sealed_secret_cert
+        type: string
+        description: >-
+          The certificate that will be used to encrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
+        moduleRef:
+          id: cert
+          output: cert
+      - name: sealed_secret_private_key
+        type: string
+        description: >-
+          The private key that will be used to decrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
+        moduleRef:
+          id: cert
+          output: private_key
+      - name: bootstrap_prefix
+        type: string
+        description: The prefix used in ArgoCD to bootstrap the application
+        default: ''
+      - name: create_webhook
+        type: bool
+        description: >-
+          Flag indicating that a webhook should be created in the gitops repo to
+          notify argocd of changes
+        default: false
+    version: v1.6.1
+    outputs:
+      - name: argocd_namespace
+        description: The namespace where the ArgoCD instance has been provisioned
+      - name: argocd_service_account
+        description: The namespace where the ArgoCD instance has been provisioned
+      - name: sealed_secrets_cert
+  - platforms:
+      - kubernetes
+      - ocp3
+      - ocp4
+    dependencies:
+      - id: cluster
+        interface: github.com/cloud-native-toolkit/automation-modules#cluster
+        refs: []
+      - id: olm
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-k8s-olm
+            version: '>= 1.2.2'
+      - id: gitops
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-tools-gitops
+            version: '>= 1.2.0'
+      - id: cert
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
+            version: '>= 0.0.0'
     variables:
       - name: cluster_type
         moduleRef:
@@ -41,7 +152,7 @@ versions:
           output: platform.ingress
         type: string
         description: The subdomain for ingresses in the cluster
-        default: ""
+        default: ''
         optional: true
       - name: cluster_config_file
         moduleRef:
@@ -92,25 +203,31 @@ versions:
           id: cert
           output: cert
         type: string
-        description: The certificate that will be used to encrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The certificate that will be used to encrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
       - name: sealed_secret_private_key
         moduleRef:
           id: cert
           output: private_key
         type: string
-        description: The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The private key that will be used to decrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
       - name: bootstrap_prefix
         type: string
         description: The prefix used in ArgoCD to bootstrap the application
-        default: ""
+        default: ''
         optional: true
       - name: create_webhook
         type: bool
-        description: Flag indicating that a webhook should be created in the gitops repo to notify argocd of changes
+        description: >-
+          Flag indicating that a webhook should be created in the gitops repo to
+          notify argocd of changes
         default: false
         optional: true
     version: v1.6.0
@@ -120,7 +237,9 @@ versions:
       - name: argocd_service_account
         description: The namespace where the ArgoCD instance has been provisioned
       - name: sealed_secrets_cert
-        description: output "sealed_secrets_cert" {   value = module.openshift_cicd.sealed_secrets_cert }
+        description: >-
+          output "sealed_secrets_cert" {   value =
+          module.openshift_cicd.sealed_secrets_cert }
   - platforms:
       - kubernetes
       - ocp3
@@ -129,25 +248,25 @@ versions:
       - id: cluster
         refs:
           - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
           - source: github.com/cloud-native-toolkit/terraform-ocp-login
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
       - id: olm
         refs:
           - source: github.com/cloud-native-toolkit/terraform-k8s-olm
-            version: ">= 1.2.2"
+            version: '>= 1.2.2'
       - id: gitops
         refs:
           - source: github.com/cloud-native-toolkit/terraform-tools-gitops
-            version: ">= 1.2.0"
+            version: '>= 1.2.0'
       - id: cert
         refs:
           - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
-            version: ">= 0.0.0"
+            version: '>= 0.0.0'
     variables:
       - name: cluster_type
         moduleRef:
@@ -161,7 +280,7 @@ versions:
           output: platform.ingress
         type: string
         description: The subdomain for ingresses in the cluster
-        default: ""
+        default: ''
         optional: true
       - name: cluster_config_file
         moduleRef:
@@ -212,21 +331,25 @@ versions:
           id: cert
           output: cert
         type: string
-        description: The certificate that will be used to encrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The certificate that will be used to encrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
       - name: sealed_secret_private_key
         moduleRef:
           id: cert
           output: private_key
         type: string
-        description: The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The private key that will be used to decrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
       - name: bootstrap_prefix
         type: string
         description: The prefix used in ArgoCD to bootstrap the application
-        default: ""
+        default: ''
         optional: true
     version: v1.5.1
     outputs:
@@ -235,7 +358,9 @@ versions:
       - name: argocd_service_account
         description: The namespace where the ArgoCD instance has been provisioned
       - name: sealed_secrets_cert
-        description: output "sealed_secrets_cert" {   value = module.openshift_cicd.sealed_secrets_cert }
+        description: >-
+          output "sealed_secrets_cert" {   value =
+          module.openshift_cicd.sealed_secrets_cert }
   - platforms:
       - kubernetes
       - ocp3
@@ -244,25 +369,25 @@ versions:
       - id: cluster
         refs:
           - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
           - source: github.com/cloud-native-toolkit/terraform-ocp-login
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
       - id: olm
         refs:
           - source: github.com/cloud-native-toolkit/terraform-k8s-olm
-            version: ">= 1.2.2"
+            version: '>= 1.2.2'
       - id: gitops
         refs:
           - source: github.com/cloud-native-toolkit/terraform-tools-gitops
-            version: ">= 1.2.0"
+            version: '>= 1.2.0'
       - id: cert
         refs:
           - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
-            version: ">= 0.0.0"
+            version: '>= 0.0.0'
     variables:
       - name: cluster_type
         moduleRef:
@@ -276,7 +401,7 @@ versions:
           output: platform.ingress
         type: string
         description: The subdomain for ingresses in the cluster
-        default: ""
+        default: ''
         optional: true
       - name: cluster_config_file
         moduleRef:
@@ -327,21 +452,25 @@ versions:
           id: cert
           output: cert
         type: string
-        description: The certificate that will be used to encrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The certificate that will be used to encrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
       - name: sealed_secret_private_key
         moduleRef:
           id: cert
           output: private_key
         type: string
-        description: The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The private key that will be used to decrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
       - name: bootstrap_prefix
         type: string
         description: The prefix used in ArgoCD to bootstrap the application
-        default: ""
+        default: ''
         optional: true
     version: v1.5.0
     outputs:
@@ -350,7 +479,9 @@ versions:
       - name: argocd_service_account
         description: The namespace where the ArgoCD instance has been provisioned
       - name: sealed_secrets_cert
-        description: output "sealed_secrets_cert" {   value = module.openshift_cicd.sealed_secrets_cert }
+        description: >-
+          output "sealed_secrets_cert" {   value =
+          module.openshift_cicd.sealed_secrets_cert }
   - platforms:
       - kubernetes
       - ocp3
@@ -359,25 +490,25 @@ versions:
       - id: cluster
         refs:
           - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
           - source: github.com/cloud-native-toolkit/terraform-ocp-login
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
       - id: olm
         refs:
           - source: github.com/cloud-native-toolkit/terraform-k8s-olm
-            version: ">= 1.2.2"
+            version: '>= 1.2.2'
       - id: gitops
         refs:
           - source: github.com/cloud-native-toolkit/terraform-tools-gitops
-            version: ">= 1.2.0"
+            version: '>= 1.2.0'
       - id: cert
         refs:
           - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
-            version: ">= 0.0.0"
+            version: '>= 0.0.0'
     variables:
       - name: cluster_type
         moduleRef:
@@ -391,7 +522,7 @@ versions:
           output: platform.ingress
         type: string
         description: The subdomain for ingresses in the cluster
-        default: ""
+        default: ''
         optional: true
       - name: cluster_config_file
         moduleRef:
@@ -442,16 +573,20 @@ versions:
           id: cert
           output: cert
         type: string
-        description: The certificate that will be used to encrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The certificate that will be used to encrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
       - name: sealed_secret_private_key
         moduleRef:
           id: cert
           output: private_key
         type: string
-        description: The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The private key that will be used to decrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
     version: v1.4.4
     outputs:
@@ -460,7 +595,9 @@ versions:
       - name: argocd_service_account
         description: The namespace where the ArgoCD instance has been provisioned
       - name: sealed_secrets_cert
-        description: output "sealed_secrets_cert" {   value = module.openshift_cicd.sealed_secrets_cert }
+        description: >-
+          output "sealed_secrets_cert" {   value =
+          module.openshift_cicd.sealed_secrets_cert }
   - platforms:
       - kubernetes
       - ocp3
@@ -469,25 +606,25 @@ versions:
       - id: cluster
         refs:
           - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
           - source: github.com/cloud-native-toolkit/terraform-ocp-login
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
       - id: olm
         refs:
           - source: github.com/cloud-native-toolkit/terraform-k8s-olm
-            version: ">= 1.2.2"
+            version: '>= 1.2.2'
       - id: gitops
         refs:
           - source: github.com/cloud-native-toolkit/terraform-tools-gitops
-            version: ">= 1.2.0"
+            version: '>= 1.2.0'
       - id: cert
         refs:
           - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
-            version: ">= 0.0.0"
+            version: '>= 0.0.0'
     variables:
       - name: cluster_type
         moduleRef:
@@ -501,7 +638,7 @@ versions:
           output: platform.ingress
         type: string
         description: The subdomain for ingresses in the cluster
-        default: ""
+        default: ''
         optional: true
       - name: cluster_config_file
         moduleRef:
@@ -552,16 +689,20 @@ versions:
           id: cert
           output: cert
         type: string
-        description: The certificate that will be used to encrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The certificate that will be used to encrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
       - name: sealed_secret_private_key
         moduleRef:
           id: cert
           output: private_key
         type: string
-        description: The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The private key that will be used to decrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
     version: v1.4.3
     outputs:
@@ -570,7 +711,9 @@ versions:
       - name: argocd_service_account
         description: The namespace where the ArgoCD instance has been provisioned
       - name: sealed_secrets_cert
-        description: output "sealed_secrets_cert" {   value = module.openshift_cicd.sealed_secrets_cert }
+        description: >-
+          output "sealed_secrets_cert" {   value =
+          module.openshift_cicd.sealed_secrets_cert }
   - platforms:
       - kubernetes
       - ocp3
@@ -579,25 +722,25 @@ versions:
       - id: cluster
         refs:
           - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
           - source: github.com/cloud-native-toolkit/terraform-ocp-login
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
       - id: olm
         refs:
           - source: github.com/cloud-native-toolkit/terraform-k8s-olm
-            version: ">= 1.2.2"
+            version: '>= 1.2.2'
       - id: gitops
         refs:
           - source: github.com/cloud-native-toolkit/terraform-tools-gitops
-            version: ">= 1.2.0"
+            version: '>= 1.2.0'
       - id: cert
         refs:
           - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
-            version: ">= 0.0.0"
+            version: '>= 0.0.0'
     variables:
       - name: cluster_type
         moduleRef:
@@ -611,7 +754,7 @@ versions:
           output: platform.ingress
         type: string
         description: The subdomain for ingresses in the cluster
-        default: ""
+        default: ''
         optional: true
       - name: cluster_config_file
         moduleRef:
@@ -662,16 +805,20 @@ versions:
           id: cert
           output: cert
         type: string
-        description: The certificate that will be used to encrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The certificate that will be used to encrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
       - name: sealed_secret_private_key
         moduleRef:
           id: cert
           output: private_key
         type: string
-        description: The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The private key that will be used to decrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
     version: v1.4.2
     outputs:
@@ -680,7 +827,9 @@ versions:
       - name: argocd_service_account
         description: The namespace where the ArgoCD instance has been provisioned
       - name: sealed_secrets_cert
-        description: output "sealed_secrets_cert" {   value = module.openshift_cicd.sealed_secrets_cert }
+        description: >-
+          output "sealed_secrets_cert" {   value =
+          module.openshift_cicd.sealed_secrets_cert }
   - platforms:
       - kubernetes
       - ocp3
@@ -689,25 +838,25 @@ versions:
       - id: cluster
         refs:
           - source: github.com/cloud-native-toolkit/terraform-ibm-container-platform
-            version: ">= 1.7.0"
+            version: '>= 1.7.0'
           - source: github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
           - source: github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
-            version: ">= 2.0.0"
+            version: '>= 2.0.0'
           - source: github.com/cloud-native-toolkit/terraform-ocp-login
-            version: ">= 1.0.0"
+            version: '>= 1.0.0'
       - id: olm
         refs:
           - source: github.com/cloud-native-toolkit/terraform-k8s-olm
-            version: ">= 1.2.2"
+            version: '>= 1.2.2'
       - id: gitops
         refs:
           - source: github.com/cloud-native-toolkit/terraform-tools-gitops
-            version: ">= 1.2.0"
+            version: '>= 1.2.0'
       - id: cert
         refs:
           - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
-            version: ">= 0.0.0"
+            version: '>= 0.0.0'
     variables:
       - name: cluster_type
         moduleRef:
@@ -721,7 +870,7 @@ versions:
           output: platform.ingress
         type: string
         description: The subdomain for ingresses in the cluster
-        default: ""
+        default: ''
         optional: true
       - name: cluster_config_file
         moduleRef:
@@ -772,16 +921,20 @@ versions:
           id: cert
           output: cert
         type: string
-        description: The certificate that will be used to encrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The certificate that will be used to encrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
       - name: sealed_secret_private_key
         moduleRef:
           id: cert
           output: private_key
         type: string
-        description: The private key that will be used to decrypt sealed secrets. If not provided, a new one will be generated
-        default: ""
+        description: >-
+          The private key that will be used to decrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
         optional: true
     version: v1.4.1
     outputs:
@@ -790,4 +943,6 @@ versions:
       - name: argocd_service_account
         description: The namespace where the ArgoCD instance has been provisioned
       - name: sealed_secrets_cert
-        description: output "sealed_secrets_cert" {   value = module.openshift_cicd.sealed_secrets_cert }
+        description: >-
+          output "sealed_secrets_cert" {   value =
+          module.openshift_cicd.sealed_secrets_cert }
