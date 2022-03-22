@@ -7,7 +7,6 @@ module "openshift_cicd" {
   cluster_config_file = var.cluster_config_file
   olm_namespace       = var.olm_namespace
   operator_namespace  = var.operator_namespace
-  app_namespace       = "default"
   sealed_secret_cert  = var.sealed_secret_cert
   sealed_secret_private_key = var.sealed_secret_private_key
 }
