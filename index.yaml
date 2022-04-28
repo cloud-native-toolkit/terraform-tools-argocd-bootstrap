@@ -112,6 +112,117 @@ versions:
           Flag indicating that a webhook should be created in the gitops repo to
           notify argocd of changes
         default: false
+    version: v1.6.12
+    outputs:
+      - name: argocd_namespace
+        description: The namespace where the ArgoCD instance has been provisioned
+      - name: argocd_service_account
+        description: The namespace where the ArgoCD instance has been provisioned
+      - name: sealed_secrets_cert
+  - platforms:
+      - kubernetes
+      - ocp3
+      - ocp4
+    dependencies:
+      - id: cluster
+        interface: github.com/cloud-native-toolkit/automation-modules#cluster
+        refs: []
+      - id: olm
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-k8s-olm
+            version: '>= 1.2.2'
+      - id: gitops
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-tools-gitops
+            version: '>= 1.2.0'
+      - id: cert
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
+            version: '>= 0.0.0'
+    variables:
+      - name: cluster_config_file
+        type: string
+        description: Cluster config file for Kubernetes cluster.
+        moduleRef:
+          id: cluster
+          output: config_file_path
+      - name: cluster_type
+        type: string
+        description: The type of cluster (openshift or kubernetes)
+        moduleRef:
+          id: cluster
+          output: platform.type_code
+      - name: olm_namespace
+        type: string
+        description: Namespace where olm is installed
+        moduleRef:
+          id: olm
+          output: olm_namespace
+      - name: operator_namespace
+        type: string
+        description: Namespace where operators will be installed
+        moduleRef:
+          id: olm
+          output: target_namespace
+      - name: ingress_subdomain
+        type: string
+        description: The subdomain for ingresses in the cluster
+        default: ''
+        moduleRef:
+          id: cluster
+          output: platform.ingress
+      - name: gitops_repo_url
+        type: string
+        description: The GitOps repo url
+        moduleRef:
+          id: gitops
+          output: config_repo_url
+      - name: git_username
+        type: string
+        description: The username used to access the GitOps repo
+        moduleRef:
+          id: gitops
+          output: config_username
+      - name: git_token
+        type: string
+        description: The token used to access the GitOps repo
+        moduleRef:
+          id: gitops
+          output: config_token
+      - name: bootstrap_path
+        type: string
+        description: The path to the bootstrap config for ArgoCD
+        moduleRef:
+          id: gitops
+          output: bootstrap_path
+      - name: sealed_secret_cert
+        type: string
+        description: >-
+          The certificate that will be used to encrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
+        moduleRef:
+          id: cert
+          output: cert
+      - name: sealed_secret_private_key
+        type: string
+        description: >-
+          The private key that will be used to decrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
+        moduleRef:
+          id: cert
+          output: private_key
+      - name: bootstrap_prefix
+        type: string
+        description: The prefix used in ArgoCD to bootstrap the application
+        default: ''
+      - name: create_webhook
+        type: bool
+        description: >-
+          Flag indicating that a webhook should be created in the gitops repo to
+          notify argocd of changes
+        default: false
     version: v1.6.11
     outputs:
       - name: argocd_namespace
