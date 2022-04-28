@@ -1,0 +1,19 @@
+name: Update dependencies
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  repository_dispatch:
+    types: [ released ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  update:
+    uses: cloud-native-toolkit/action-workflows/.github/workflows/update-dependencies.yaml@v1
+    with:
+      repo: ${{ github.event.client_payload.repo }}
+      ref: ${{ github.event.client_payload.ref }}
+      sha: ${{ github.event.client_payload.sha }}
+    secrets:
+      USERNAME: ${{ secrets.USERNAME }}
+      TOKEN: ${{ secrets.TOKEN }}
