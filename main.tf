@@ -1,6 +1,6 @@
 
 module "openshift_cicd" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-openshift-cicd.git?ref=v1.10.0"
+  source = "github.com/cloud-native-toolkit/terraform-tools-openshift-cicd.git?ref=v1.10.2"
 
   cluster_type        = var.cluster_type
   ingress_subdomain   = var.ingress_subdomain
@@ -12,7 +12,7 @@ module "openshift_cicd" {
 }
 
 module "bootstrap" {
-  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.2.11"
+  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.3.0"
 
   cluster_config_file = var.cluster_config_file
   gitops_namespace    = module.openshift_cicd.argocd_namespace
