@@ -1,9 +1,16 @@
 terraform {
   required_providers {
     clis = {
-      source  = "cloud-native-toolkit/clis"
+      source = "cloud-native-toolkit/clis"
+    }
+    gitops = {
+      source = "cloud-native-toolkit/gitops"
     }
   }
+}
+
+provider "gitops" {
+  bin_dir = data.clis_check.clis2
 }
 
 provider "clis" {
@@ -15,7 +22,7 @@ provider "clis" {
 data clis_check clis2 {
   provider = "clis.clis2"
 
-  clis = ["kubectl", "oc"]
+  clis = ["kubectl", "oc", "gitu"]
 }
 
 resource local_file bin_dir {
