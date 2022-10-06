@@ -13,15 +13,7 @@ provider "gitops" {
   bin_dir = data.clis_check.clis2.bin_dir
 }
 
-provider "clis" {
-  alias = "clis2"
-
-  bin_dir = "${path.cwd}/test_bin_dir"
-}
-
 data clis_check clis2 {
-  provider = "clis.clis2"
-
   clis = ["kubectl", "oc", "gitu"]
 }
 
