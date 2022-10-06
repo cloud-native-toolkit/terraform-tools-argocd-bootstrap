@@ -40,6 +40,12 @@ variable "git_token" {
 //  sensitive   = true
 }
 
+variable "git_ca_cert" {
+  type        = string
+  description = "Base64 encoded ca cert of the gitops repository"
+  default     = ""
+}
+
 variable "bootstrap_path" {
   type        = string
   description = "The path to the bootstrap config for ArgoCD"

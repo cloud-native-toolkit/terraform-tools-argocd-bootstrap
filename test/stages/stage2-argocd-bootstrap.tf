@@ -9,6 +9,7 @@ module "argocd-bootstrap" {
   gitops_repo_url     = module.gitops.config_repo_url
   git_username        = module.gitops.config_username
   git_token           = module.gitops.config_token
+  git_ca_cert         = module.gitops.config_ca_cert
   bootstrap_path      = module.gitops.bootstrap_path
   sealed_secret_cert  = module.cert.cert
   sealed_secret_private_key = module.cert.private_key

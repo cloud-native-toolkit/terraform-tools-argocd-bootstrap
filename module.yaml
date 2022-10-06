@@ -11,6 +11,9 @@ versions:
     - kubernetes
     - ocp3
     - ocp4
+  providers:
+    - name: clis
+      source: cloud-native-toolkit/clis
   dependencies:
     - id: cluster
       interface: github.com/cloud-native-toolkit/automation-modules#cluster
@@ -60,6 +63,10 @@ versions:
       moduleRef:
         id: gitops
         output: config_token
+    - name: git_ca_cert
+      moduleRef:
+        id: gitops
+        output: config_ca_cert
     - name: bootstrap_path
       moduleRef:
         id: gitops
