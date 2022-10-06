@@ -10,7 +10,7 @@ terraform {
 }
 
 provider "gitops" {
-  bin_dir = data.clis_check.clis2
+  bin_dir = data.clis_check.clis2.bin_dir
 }
 
 provider "clis" {
