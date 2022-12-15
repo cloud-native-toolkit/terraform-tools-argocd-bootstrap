@@ -39,6 +39,7 @@ jobs:
 
     env:
       HOME: /home/devops
+      TF_LOG_PROVIDER: DEBUG
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
