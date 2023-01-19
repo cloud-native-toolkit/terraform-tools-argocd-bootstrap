@@ -60,6 +60,10 @@ versions:
       moduleRef:
         id: gitops
         output: config_token
+    - name: git_ca_cert
+      moduleRef:
+        id: gitops
+        output: config_ca_cert
     - name: bootstrap_path
       moduleRef:
         id: gitops

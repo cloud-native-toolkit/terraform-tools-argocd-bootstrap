@@ -37,7 +37,13 @@ variable "git_username" {
 variable "git_token" {
   type        = string
   description = "The token used to access the GitOps repo"
-//  sensitive   = true
+  sensitive   = true
+}
+
+variable "git_ca_cert" {
+  type        = string
+  description = "Base64 encoded ca cert of the gitops repository"
+  default     = ""
 }
 
 variable "bootstrap_path" {

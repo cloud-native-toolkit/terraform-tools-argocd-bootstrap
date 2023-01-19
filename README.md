@@ -19,10 +19,7 @@ None
 This module makes use of the output from other modules:
 
 - Cluster
-    - github.com/cloud-native-toolkit/terraform-ibm-container-platform
-    - github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
-    - github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
-    - github.com/cloud-native-toolkit/terraform-ocp-login
+    - interface: github.com/cloud-native-toolkit/automation-modules#cluster
 - OLM 
     - github.com/cloud-native-toolkit/terraform-k8s-olm
 - GitOps 
