@@ -8,7 +8,7 @@ The module depends on the following software components:
 
 ### Command-line tools
 
-- terraform - v14
+- terraform - v15
 
 ### Terraform providers
 
@@ -19,10 +19,7 @@ None
 This module makes use of the output from other modules:
 
 - Cluster
-    - github.com/cloud-native-toolkit/terraform-ibm-container-platform
-    - github.com/cloud-native-toolkit/terraform-ibm-ocp-vpc
-    - github.com/cloud-native-toolkit/terraform-k8s-ocp-cluster
-    - github.com/cloud-native-toolkit/terraform-ocp-login
+    - interface: github.com/cloud-native-toolkit/automation-modules#cluster
 - OLM 
     - github.com/cloud-native-toolkit/terraform-k8s-olm
 - GitOps 
@@ -31,6 +28,8 @@ This module makes use of the output from other modules:
     - github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
 
 ## Example usage
+
+[Refer the test cases for this module](test/stages/stage2-argocd-bootstrap.tf) 
 
 ```hcl-terraform
 module "argocd-bootsrap" {
@@ -47,6 +46,7 @@ module "argocd-bootsrap" {
   bootstrap_path      = module.gitops.bootstrap_path
   sealed_secret_cert  = module.cert.cert
   sealed_secret_private_key = module.cert.private_key
+  create_webhook      = true
 }
 ```
 
