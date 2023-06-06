@@ -3,4 +3,6 @@ provider "ibm" {
   ibmcloud_api_key = var.ibmcloud_api_key
 }
 
-provider "clis" {}
+provider "clis" {
+  bin_dir = "./bin3"
+}
