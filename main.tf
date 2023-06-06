@@ -1,6 +1,6 @@
 
 module "openshift_cicd" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-openshift-cicd.git?ref=v1.11.1"
+  source = "github.com/cloud-native-toolkit/terraform-tools-openshift-cicd.git?ref=v2.0.0"
 
   cluster_type        = var.cluster_type
   ingress_subdomain   = var.ingress_subdomain
