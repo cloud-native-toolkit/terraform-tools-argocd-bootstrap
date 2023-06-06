@@ -11,6 +11,9 @@ versions:
     - kubernetes
     - ocp3
     - ocp4
+  providers:
+    - name: clis
+      source: "cloud-native-toolkit/clis"
   dependencies:
     - id: cluster
       interface: github.com/cloud-native-toolkit/automation-modules#cluster
@@ -36,6 +39,10 @@ versions:
       moduleRef:
         id: cluster
         output: platform.ingress
+    - name: tls_secret_name
+      moduleRef:
+        id: cluster
+        output: platform.tls_secret
     - name: cluster_config_file
       moduleRef:
         id: cluster

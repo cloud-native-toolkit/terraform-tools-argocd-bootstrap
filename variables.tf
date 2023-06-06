@@ -24,6 +24,12 @@ variable "ingress_subdomain" {
   default     = ""
 }
 
+variable "tls_secret_name" {
+  type        = string
+  description = "The name of the secret that contains the ingress tls info"
+  default     = ""
+}
+
 variable "gitops_repo_url" {
   type        = string
   description = "The GitOps repo url"

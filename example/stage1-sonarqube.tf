@@ -5,8 +5,8 @@ module "gitops_sonarqube" {
   git_credentials = module.gitops.git_credentials
   server_name = module.gitops.server_name
   namespace                = module.gitops_namespace.name
-  cluster_ingress_hostname = module.dev_cluster.platform.ingress
-  cluster_type             = module.dev_cluster.platform.type_code
-  tls_secret_name          = module.dev_cluster.platform.tls_secret
+  cluster_ingress_hostname = module.cluster.platform.ingress
+  cluster_type             = module.cluster.platform.type_code
+  tls_secret_name          = module.cluster.platform.tls_secret
   kubeseal_cert            = module.argocd-bootstrap.sealed_secrets_cert
 }

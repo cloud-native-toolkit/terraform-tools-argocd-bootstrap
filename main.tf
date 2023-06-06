@@ -1,9 +1,10 @@
 
 module "openshift_cicd" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-openshift-cicd.git?ref=v1.11.1"
+  source = "github.com/cloud-native-toolkit/terraform-tools-openshift-cicd.git?ref=v2.0.0"
 
   cluster_type        = var.cluster_type
   ingress_subdomain   = var.ingress_subdomain
+  tls_secret_name     = var.tls_secret_name
   cluster_config_file = var.cluster_config_file
   olm_namespace       = var.olm_namespace
   operator_namespace  = var.operator_namespace
