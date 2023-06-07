@@ -3,6 +3,9 @@ terraform {
     ibm = {
       source = "ibm-cloud/ibm"
     }
+    gitops = {
+      source = "cloud-native-toolkit/gitops"
+    }
     clis = {
       source = "cloud-native-toolkit/clis"
     }
