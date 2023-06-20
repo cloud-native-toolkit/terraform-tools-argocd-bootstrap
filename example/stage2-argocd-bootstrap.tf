@@ -1,5 +1,5 @@
 module "argocd-bootstrap" {
-  source = "../.."
+  source = ".."
 
   cluster_type        = module.cluster.platform.type_code
   ingress_subdomain   = module.cluster.platform.ingress
