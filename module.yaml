@@ -14,6 +14,8 @@ versions:
   providers:
     - name: clis
       source: "cloud-native-toolkit/clis"
+    - name: gitops
+      source: cloud-native-toolkit/gitops
   dependencies:
     - id: cluster
       interface: github.com/cloud-native-toolkit/automation-modules#cluster
@@ -71,6 +73,14 @@ versions:
       moduleRef:
         id: gitops
         output: config_ca_cert
+    - name: bootstrap_branch
+      moduleRef:
+        id: gitops
+        output: bootstrap_branch
+    - name: server_name
+      moduleRef:
+        id: gitops
+        output: server_name
     - name: bootstrap_path
       moduleRef:
         id: gitops
