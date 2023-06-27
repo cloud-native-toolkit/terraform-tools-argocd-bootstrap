@@ -29,7 +29,7 @@ This module makes use of the output from other modules:
 
 ## Example usage
 
-[Refer the test cases for this module](test/stages/stage2-argocd-bootstrap.tf) 
+[Refer the test cases for this module](example) 
 
 ```hcl-terraform
 module "argocd-bootsrap" {
