@@ -1,9 +1,10 @@
 
 module "openshift_cicd" {
-  source = "github.com/cloud-native-toolkit/terraform-tools-openshift-cicd.git?ref=v1.11.1"
+  source = "github.com/cloud-native-toolkit/terraform-tools-openshift-cicd.git?ref=v2.0.0"
 
   cluster_type        = var.cluster_type
   ingress_subdomain   = var.ingress_subdomain
+  tls_secret_name     = var.tls_secret_name
   cluster_config_file = var.cluster_config_file
   olm_namespace       = var.olm_namespace
   operator_namespace  = var.operator_namespace
@@ -12,7 +13,7 @@ module "openshift_cicd" {
 }
 
 module "bootstrap" {
-  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.4.1"
+  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.5.0"
   depends_on = [
     module.openshift_cicd
   ]
@@ -27,6 +28,8 @@ module "bootstrap" {
   git_token           = var.git_token
   git_ca_cert         = var.git_ca_cert
   bootstrap_path      = var.bootstrap_path
+  bootstrap_branch    = var.bootstrap_branch
+  server_name         = var.server_name
   prefix              = var.bootstrap_prefix
   create_webhook      = var.create_webhook
 }
