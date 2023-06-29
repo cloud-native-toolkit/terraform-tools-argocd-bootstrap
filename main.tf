@@ -13,7 +13,7 @@ module "openshift_cicd" {
 }
 
 module "bootstrap" {
-  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.5.0"
+  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.5.1"
   depends_on = [
     module.openshift_cicd
   ]
@@ -32,4 +32,5 @@ module "bootstrap" {
   server_name         = var.server_name
   prefix              = var.bootstrap_prefix
   create_webhook      = var.create_webhook
+  delete_app_on_destroy = var.delete_app_on_destroy
 }

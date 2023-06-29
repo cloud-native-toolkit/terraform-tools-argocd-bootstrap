@@ -92,3 +92,9 @@ variable "server_name" {
   description = "The name of the server in the multi-tenant repo"
   default     = "default"
 }
+
+variable "delete_app_on_destroy" {
+  type        = bool
+  description = "Flag indicating that the bootstrap application should be removed from the cluster when the module is destroyed"
+  default     = true
+}
