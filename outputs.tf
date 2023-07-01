@@ -12,3 +12,7 @@ output "argocd_service_account" {
 output "sealed_secrets_cert" {
   value = module.openshift_cicd.sealed_secrets_cert
 }
+
+output "sync" {
+  value       = module.bootstrap.sync
+}
