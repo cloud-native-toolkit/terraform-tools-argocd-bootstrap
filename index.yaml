@@ -152,6 +152,158 @@ versions:
           Flag indicating that the bootstrap application should be removed from
           the cluster when the module is destroyed
         default: true
+    version: v2.1.0
+    outputs:
+      - name: argocd_namespace
+        description: The namespace where the ArgoCD instance has been provisioned
+      - name: argocd_service_account
+        description: The namespace where the ArgoCD instance has been provisioned
+      - name: sealed_secrets_cert
+      - name: sync
+  - platforms:
+      - kubernetes
+      - ocp3
+      - ocp4
+    providers:
+      - name: clis
+        source: cloud-native-toolkit/clis
+      - name: gitops
+        source: cloud-native-toolkit/gitops
+    dependencies:
+      - id: cluster
+        interface: github.com/cloud-native-toolkit/automation-modules#cluster
+        refs: []
+      - id: olm
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-k8s-olm
+            version: '>= 1.2.2'
+      - id: gitops
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-tools-gitops
+            version: '>= 1.2.0'
+      - id: cert
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-util-sealed-secret-cert
+            version: '>= 0.0.0'
+    variables:
+      - name: cluster_config_file
+        type: string
+        description: Cluster config file for Kubernetes cluster.
+        moduleRef:
+          id: cluster
+          output: config_file_path
+      - name: cluster_type
+        type: string
+        description: The type of cluster (openshift or kubernetes)
+        moduleRef:
+          id: cluster
+          output: platform.type_code
+      - name: olm_namespace
+        type: string
+        description: Namespace where olm is installed
+        moduleRef:
+          id: olm
+          output: olm_namespace
+      - name: operator_namespace
+        type: string
+        description: Namespace where operators will be installed
+        moduleRef:
+          id: olm
+          output: target_namespace
+      - name: ingress_subdomain
+        type: string
+        description: The subdomain for ingresses in the cluster
+        default: ''
+        moduleRef:
+          id: cluster
+          output: platform.ingress
+      - name: tls_secret_name
+        type: string
+        description: The name of the secret that contains the ingress tls info
+        default: ''
+        moduleRef:
+          id: cluster
+          output: platform.tls_secret
+      - name: gitops_repo_url
+        type: string
+        description: The GitOps repo url
+        moduleRef:
+          id: gitops
+          output: config_repo_url
+      - name: git_username
+        type: string
+        description: The username used to access the GitOps repo
+        moduleRef:
+          id: gitops
+          output: config_username
+      - name: git_token
+        type: string
+        description: The token used to access the GitOps repo
+        sensitive: true
+        moduleRef:
+          id: gitops
+          output: config_token
+      - name: git_ca_cert
+        type: string
+        description: Base64 encoded ca cert of the gitops repository
+        default: ''
+        moduleRef:
+          id: gitops
+          output: config_ca_cert
+      - name: bootstrap_path
+        type: string
+        description: The path to the bootstrap config for ArgoCD
+        moduleRef:
+          id: gitops
+          output: bootstrap_path
+      - name: bootstrap_branch
+        type: string
+        description: The branch of the bootstrap repo
+        default: main
+        moduleRef:
+          id: gitops
+          output: bootstrap_branch
+      - name: sealed_secret_cert
+        type: string
+        description: >-
+          The certificate that will be used to encrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
+        moduleRef:
+          id: cert
+          output: cert
+      - name: sealed_secret_private_key
+        type: string
+        description: >-
+          The private key that will be used to decrypt sealed secrets. If not
+          provided, a new one will be generated
+        default: ''
+        moduleRef:
+          id: cert
+          output: private_key
+      - name: bootstrap_prefix
+        type: string
+        description: The prefix used in ArgoCD to bootstrap the application
+        default: ''
+      - name: create_webhook
+        type: bool
+        description: >-
+          Flag indicating that a webhook should be created in the gitops repo to
+          notify argocd of changes
+        default: false
+      - name: server_name
+        type: string
+        description: The name of the server in the multi-tenant repo
+        default: default
+        moduleRef:
+          id: gitops
+          output: server_name
+      - name: delete_app_on_destroy
+        type: bool
+        description: >-
+          Flag indicating that the bootstrap application should be removed from
+          the cluster when the module is destroyed
+        default: true
     version: v2.0.1
     outputs:
       - name: argocd_namespace
@@ -3478,3 +3630,5 @@ versions:
         description: >-
           output "sealed_secrets_cert" {   value =
           module.openshift_cicd.sealed_secrets_cert }
+interfaces:
+  - github.com/cloud-native-toolkit/automation-modules#argocd-bootstrap
