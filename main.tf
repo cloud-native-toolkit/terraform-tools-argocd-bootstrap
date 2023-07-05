@@ -13,7 +13,7 @@ module "openshift_cicd" {
 }
 
 module "bootstrap" {
-  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.6.0"
+  source = "github.com/cloud-native-toolkit/terraform-util-gitops-bootstrap.git?ref=v1.6.1"
   depends_on = [
     module.openshift_cicd
   ]
