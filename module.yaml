@@ -15,7 +15,7 @@ versions:
     - ocp4
   providers:
     - name: clis
-      source: "cloud-native-toolkit/clis"
+      source: cloud-native-toolkit/clis
     - name: gitops
       source: cloud-native-toolkit/gitops
   dependencies:
