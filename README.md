@@ -8,11 +8,12 @@ The module depends on the following software components:
 
 ### Command-line tools
 
-- terraform - v15
+- terraform >= v0.15
 
 ### Terraform providers
 
-None
+- clis - cloud-native-toolkit/clis
+- gitops- cloud-native-toolkit/gitops
 
 ## Module dependencies
 
